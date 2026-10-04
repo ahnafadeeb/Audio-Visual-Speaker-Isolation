@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audio-Visual Speaker Isolation</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+  <h1>Audio-Visual Speaker Isolation</h1>
+  <span class="sub">IEEE SP Cup 2026</span>
+  <span id="device" class="pill"></span>
+</header>
+
+<main>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section id="panel-upload" class="panel">
+    <div id="drop" class="drop">
+      <p class="drop-title">Drop a video here</p>
+      <p class="drop-sub">or <button id="browse" class="link">browse</button> &middot; mp4, mov, mkv, webm</p>
+      <input id="file" type="file" accept="video/*" hidden>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section id="panel-progress" class="panel" hidden>
+    <div class="bar"><div id="bar-fill"></div></div>
+    <p class="status"><span id="stage">queued</span><span id="msg"></span></p>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section id="panel-player" class="panel" hidden>
+    <div class="stage-wrap">
+      <video id="video" playsinline muted></video>
+      <canvas id="overlay"></canvas>
+    </div>
+
+    <div class="transport">
+      <button id="playpause" class="ctl">Play</button>
+      <span id="time" class="time">0:00 / 0:00</span>
+      <span class="spacer"></span>
+      <button id="mode" class="ctl mode" hidden>Isolation: strict</button>
+      <button id="new-video" class="ctl" title="Process another video (N)">New video</button>
+      <label class="drift-label">
+        <input type="checkbox" id="show-drift"> sync
+        <span id="drift" class="drift"></span>
+      </label>
+    </div>
+
+    <p class="hint">Click a face &mdash; or a button &mdash; to isolate that speaker. Switching is instant.</p>
+    <div id="speakers" class="speakers"></div>
+
+    <!-- The audio-visual matcher decides which separated stem belongs to which
+         face, and on some clips that decision is measurably no better than a
+         coin flip (docs/DIAG_MATCHER.md).  With two speakers a coin flip is
+         wrong half the time and exactly one press of this button fixes it, so
+         the honest interface is to say so and hand the permutation to the user
+         rather than to keep reporting a confidence that cannot detect it. -->
+    <div id="pairing" class="pairing" hidden>
+      <button id="swap" class="ctl swap">Swap audio</button>
+      <span id="pairing-note" class="pairing-note"></span>
+    </div>
+
+    <details class="diag">
+      <summary>Diagnostics</summary>
+      <pre id="diag-body"></pre>
+    </details>
+  </section>
+
+  <p id="error" class="error" hidden></p>
+
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

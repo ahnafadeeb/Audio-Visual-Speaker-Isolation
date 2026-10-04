@@ -1,0 +1,284 @@
+/* Minimal dark theme. No framework, no build step, no webfonts —
+ * the demo must render instantly on a laptop with no network. */
+
+:root {
+  --bg: #0b0e13;
+  --panel: #141922;
+  --line: #232a36;
+  --fg: #e6e9ef;
+  --dim: #8b95a7;
+  --accent: #4ade80;
+  --warn: #fbbf24;
+  --err: #f87171;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+h1 { font-size: 17px; font-weight: 600; margin: 0; }
+.sub { color: var(--dim); font-size: 12px; }
+
+.pill {
+  margin-left: auto;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--dim);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+main { max-width: 940px; margin: 0 auto; padding: 24px; }
+
+.panel { margin-bottom: 18px; }
+
+/* -- upload ------------------------------------------------------------- */
+
+.drop {
+  border: 1.5px dashed var(--line);
+  border-radius: 12px;
+  padding: 56px 24px;
+  text-align: center;
+  transition: border-color .15s, background .15s;
+}
+.drop.over { border-color: var(--accent); background: rgba(74, 222, 128, .05); }
+.drop-title { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+.drop-sub { margin: 0; color: var(--dim); font-size: 13px; }
+
+.link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* -- progress ----------------------------------------------------------- */
+
+.bar {
+  height: 6px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+#bar-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width .25s ease-out;
+}
+.status {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 0;
+  color: var(--dim);
+  font-size: 12px;
+}
+#stage { color: var(--fg); font-weight: 600; text-transform: capitalize; }
+
+/* -- player ------------------------------------------------------------- */
+
+.stage-wrap {
+  position: relative;
+  background: #000;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  line-height: 0;
+}
+#video { width: 100%; height: auto; display: block; }
+
+/* The canvas sits exactly on the video box and takes the clicks. Both are
+ * laid out by the same rules, so normalised coords need no correction. */
+#overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.ctl {
+  min-width: 78px;
+  padding: 7px 14px;
+  background: var(--panel);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ctl:hover { border-color: var(--dim); }
+
+.time {
+  color: var(--dim);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.spacer { flex: 1; }
+
+.drift-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--dim);
+  font-size: 12px;
+  cursor: pointer;
+}
+.drift {
+  min-width: 56px;
+  font-variant-numeric: tabular-nums;
+}
+.drift.ok   { color: var(--accent); }
+.drift.warn { color: var(--warn); }
+
+.hint { margin: 16px 0 8px; color: var(--dim); font-size: 12px; }
+
+/* -- speaker switcher --------------------------------------------------- */
+
+.speakers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+
+.speaker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--panel);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.speaker:hover { border-color: var(--dim); }
+.speaker.active {
+  border-color: var(--accent);
+  background: rgba(74, 222, 128, .07);
+}
+
+.sw-name { font-weight: 600; font-size: 13px; }
+.speaker.active .sw-name { color: var(--accent); }
+
+/* Post-gain level meter. A muted speaker reads a flat zero — the silence is
+ * visible, not merely inaudible. */
+.meter {
+  display: block;
+  height: 4px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.meter i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--dim);
+  transition: width .06s linear;
+}
+.speaker.active .meter i { background: var(--accent); }
+
+.warn-tag {
+  align-self: flex-start;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(251, 191, 36, .14);
+  color: var(--warn);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* -- stem/face pairing override ----------------------------------------- */
+
+.pairing {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.pairing-note {
+  color: var(--dim);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ctl.swap { min-width: 104px; }
+/* Green while strict isolation is on, so the mode is readable at a glance. */
+.ctl.mode.on {
+  border-color: rgba(74, 222, 128, .55);
+  background: rgba(74, 222, 128, .12);
+  color: #4ade80;
+}
+/* Amber, matching .warn-tag, and only while the pairing is both untrustworthy
+ * and untouched: once the user has rotated it, the pipeline's verdict says
+ * nothing about whether the CURRENT binding is right, so a standing alarm
+ * would just be noise. */
+.ctl.swap.urgent {
+  border-color: rgba(251, 191, 36, .55);
+  background: rgba(251, 191, 36, .12);
+  color: var(--warn);
+}
+.ctl.swap.urgent:hover { border-color: var(--warn); }
+
+/* -- diagnostics + errors ---------------------------------------------- */
+
+.diag { margin-top: 20px; }
+.diag summary {
+  color: var(--dim);
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.diag pre {
+  margin: 10px 0 0;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--dim);
+  font: 11px/1.6 ui-monospace, "Cascadia Code", Consolas, monospace;
+  overflow-x: auto;
+}
+
+.error {
+  padding: 11px 14px;
+  background: rgba(248, 113, 113, .1);
+  border: 1px solid rgba(248, 113, 113, .35);
+  border-radius: 8px;
+  color: var(--err);
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
