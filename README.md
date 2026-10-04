@@ -1,6 +1,6 @@
 # Audio-Visual Speaker Isolation
 
-IEEE Signal Processing Cup 2026. Upload a video of two people talking, click a
+Upload a video of two people talking, click a
 face, hear only that person. Switching speakers is instant and does not
 interrupt playback.
 
